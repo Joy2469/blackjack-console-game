@@ -2,9 +2,9 @@
 # Blackjack game
 # For displaying cards UTF-8 linux based symbols are used
 
-# for installing shuffle
 
-import random
+from os import system, name  # for clearing the screen with the help of os.system
+import random  # for installing shuffle
 
 
 class Card(object):
@@ -106,12 +106,6 @@ def ascii_version_of_hidden_card(*cards):
     return join_lines((HIDDEN_CARD, ascii_version_of_card(*cards[1:])))
 
 
-# TEST CASES
-test_card_1 = Card('Diamonds', '4')
-test_card_2 = Card('Clubs', 'Ace')
-test_card_3 = Card('Spades', 'Jack')
-test_card_4 = Card('Hearts', '10')
-
 # print(ascii_version_of_card(test_card_1, test_card_2, test_card_3, test_card_4))
 # print(ascii_version_of_hidden_card(test_card_1, test_card_2, test_card_3, test_card_4))
 # # print(ascii_version_of_hidden_card(test_card_1, test_card_2))
@@ -145,21 +139,47 @@ distributed_card_no = 0
 
 
 # appends one items at the end of the list
-def add_card_player(distributed_card_no):
-    player.append(cards[distributed_card_no])
-    distributed_card_no = distributed_card_no + 1
+def add_card_player():
+    player.append(cards.pop())
 
 
-def add_card_dealer(distributed_card_no):
-    dealer.append(cards[distributed_card_no])
-    distributed_card_no = distributed_card_no + 1
+def add_card_dealer():
+    dealer.append(cards.pop())
 
-player.append(cards[distributed_card_no])# player gets first card
-dealer.append(cards[distributed_card_no ]) # dealer gets first card
-player.append(cards[distributed_card_no ]) # player gets 2nd card
-dealer.append(cards[distributed_card_no]) # dealer gets 2nd card
 
-# player and dealer each have two cards
-for i in player:
-    print(ascii_version_of_card(player.))
-# print(ascii_version_of_hidden_card(dealer))
+random.shuffle(cards)
+
+add_card_player()
+add_card_dealer()
+add_card_player()
+add_card_dealer()
+
+
+
+
+
+
+# define our clear function
+# we need to de clutter the screen as this is a game and
+# and we want it to be user friendly.
+# we use cls if it is windows  (os name in memeory is 'nt')
+# otherwise(linux) we use clear
+def clear():
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
+
+        # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = system('clear')
+
+
+while True:
+    clear()
+    print('Dealer Cards:')
+    print(ascii_version_of_hidden_card(*dealer)) # we are passing it as *dealer as we need to pass the address
+    print('\nYour Cards:')
+    print(ascii_version_of_card(*player))
+
+
+    break
