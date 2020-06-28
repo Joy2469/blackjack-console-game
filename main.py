@@ -7,6 +7,10 @@ from os import system, name  # for clearing the screen with the help of os.syste
 import random  # for installing shuffle
 
 
+# ---------------------------------------------
+# CARDS
+# ---------------------------------------------
+
 class Card(object):
     card_values = {
         'Ace': 11,  # value of the ace is high until it needs to be low
@@ -106,10 +110,6 @@ def ascii_version_of_hidden_card(*cards):
     return join_lines((HIDDEN_CARD, ascii_version_of_card(*cards[1:])))
 
 
-# print(ascii_version_of_card(test_card_1, test_card_2, test_card_3, test_card_4))
-# print(ascii_version_of_hidden_card(test_card_1, test_card_2, test_card_3, test_card_4))
-# # print(ascii_version_of_hidden_card(test_card_1, test_card_2))
-
 # Creating a deck of cards
 cards = [
     Card('Diamonds', '2'), Card('Diamonds', '3'), Card('Diamonds', '4'), Card('Diamonds', '5'), Card('Diamonds', '6'),
@@ -125,6 +125,11 @@ cards = [
     Card('Hearts', '7'), Card('Hearts', '8'), Card('Hearts', '9'), Card('Hearts', '10'), Card('Hearts', 'Jack'),
     Card('Hearts', 'Queen'), Card('Hearts', 'King'), Card('Hearts', 'Ace'),
 ]
+
+# ---------------------------------------------
+# CARDS ENDS
+# ---------------------------------------------
+
 
 # shuffling the list
 random.shuffle(cards)
@@ -155,8 +160,16 @@ add_card_player()
 add_card_dealer()
 
 
+def calc_hand(hand):
+    sum = 0
+    for i in hand:  # calculating the sum of the entire hand assuming A=11
+        sum = sum + i.points
 
+    for j in hand:
+        if sum > 21 and i.points == 11:
+            sum = sum - 10
 
+    return sum
 
 
 # define our clear function
@@ -174,12 +187,89 @@ def clear():
         _ = system('clear')
 
 
+standing = False
+first_hand = True
 while True:
     clear()
-    print('Dealer Cards:')
-    print(ascii_version_of_hidden_card(*dealer)) # we are passing it as *dealer as we need to pass the address
-    print('\nYour Cards:')
+
+    player_score = calc_hand(player)
+    dealer_score = calc_hand(dealer)
+
+    if standing:
+        print('Dealer Cards:', dealer_score)
+        print(print(ascii_version_of_card(*dealer)))
+    else:
+        print('Dealer Cards:')
+        print(ascii_version_of_hidden_card(*dealer)) # we are passing it as *dealer as we need to pass the address
+    print('\nYour Cards:', player_score)
     print(ascii_version_of_card(*player))
 
 
-    break
+    if standing:
+        if dealer_score > 21:
+            print("Dealer busted, you win")
+        elif player_score == dealer_score:
+            print("Push, nobody wins or loses")
+        elif player_score > dealer_score:
+            print("You beat the dealer, You Win!!!")
+            print("──────────────────────────────────────────────────────────────────────────────────────────────────────────")
+            print("**********************************************************************************************************")
+            print("──────────────────────────────────────────────────────────────────────────────────────────────────────────")
+            print("***     ***      ****       ***      ***               ***                   ***   ***   ******      ***                ")
+            print(" ***   ***     ***  ***     ***      ***               ***                   ***   ***   *** ***     ***                 ")
+            print("  *** ***     ***    ***    ***      ***               ***       *****       ***   ***   ***  ***    ***                   ")
+            print("   *****     ***      ***   ***      ***               ***      *** ***      ***   ***   ***   ***   ***                     ")
+            print("    ***       ***    ***     ***    ***                 ***    ***   ***    ***    ***   ***    ***  ***                     ")
+            print("    ***        ***  ***       ***  ***                   ***  ***     ***  ***     ***   ***     *** ***                       ")
+            print("    ***          ****          ******                     ******       ******      ***   ****     ******                        ")
+            print("──────────────────────────────────────────────────────────────────────────────────────────────────────────")
+            print("**********************************************************************************************************")
+            print("──────────────────────────────────────────────────────────────────────────────────────────────────────────")
+
+        else: # dealer score is greater than your but lesser than 22
+            print('You Lose :/')
+
+        break
+
+    if first_hand and player_score == 21:
+        print("BlackJack! Nice!")
+        print("──────────────────────────────────────────────────────────────────────────────────────────────────────────")
+        print("**********************************************************************************************************")
+        print("──────────────────────────────────────────────────────────────────────────────────────────────────────────")
+        print("***     ***      ****       ***      ***               ***                   ***   ***   ******      ***                ")
+        print(" ***   ***     ***  ***     ***      ***               ***                   ***   ***   *** ***     ***                 ")
+        print("  *** ***     ***    ***    ***      ***               ***       *****       ***   ***   ***  ***    ***                   ")
+        print("   *****     ***      ***   ***      ***               ***      *** ***      ***   ***   ***   ***   ***                     ")
+        print("    ***       ***    ***     ***    ***                 ***    ***   ***    ***    ***   ***    ***  ***                     ")
+        print("    ***        ***  ***       ***  ***                   ***  ***     ***  ***     ***   ***     *** ***                       ")
+        print("    ***          ****          ******                     ******       ******      ***   ****     ******                        ")
+        print("──────────────────────────────────────────────────────────────────────────────────────────────────────────")
+        print("**********************************************************************************************************")
+        print("──────────────────────────────────────────────────────────────────────────────────────────────────────────")
+        break
+
+    if player_score > 21:
+        print('You busted!')
+        break
+
+
+
+    # showing the menu
+    print("\n")
+    print("What would you like to do?")
+    print(" [1] Hit")
+    print(" [2] Stand")
+
+    print("\n")
+    choice = input('Your Choice: ')
+    print("\n")
+
+    if choice == '1':  # hit
+        add_card_player()
+    elif choice == '2':
+        """
+        we need to calculate dealers hand
+        """
+        standing = True
+        while calc_hand(dealer) <= 16:
+            add_card_dealer()
