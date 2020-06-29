@@ -44,4 +44,12 @@ Win:
 9. The player can double down during the first hand i.e. he can double the investement during the first hand and has to take only one more card
 10. Dealer hits on 16 and stands on 17
 
+## Next Steps
+**Introduce the following**
+1. Surrender
+2. Soft-17/Hard-17
+3. Multiplayers 
+4. Split
+
+
 ## Resources 
