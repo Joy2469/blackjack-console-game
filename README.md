@@ -10,6 +10,7 @@ Blackjack Console game is a single player Blackjack game that gives the option o
 **Language:** Python3\
 **Data Structure:** lists\
 **Concepts:** Classes and Objects, Iteration, Functions/Methods
+**Packages/Classes:** Random, os (name, system)
 
 ### User Interface:
 Dealer's Cards:\
