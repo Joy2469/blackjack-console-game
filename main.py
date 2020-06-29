@@ -11,9 +11,18 @@ print("Do you want to play BlackJack ♠♦♥♣ [Y/N]")
 while True:
 
     play = input('Your Choice: ')
-    print(" ")
+
+
+    """
+    Here we are not checking for string becuse too much input validation in the game will destroy 
+    the experience 
+    """
 
     if play == 'Y':
+        bet = int(input("\nHow much money do you want to bet (50-1000):"))
+        print("")
+
+
         # ---------------------------------------------
         # CARDS
         # ---------------------------------------------
@@ -158,6 +167,9 @@ while True:
             dealer.append(cards.pop())
 
 
+        # shuffling to generate the random order
+        seed = random.random()
+        random.seed(seed)
         random.shuffle(cards)
 
         add_card_player()
@@ -220,10 +232,16 @@ while True:
                 if standing:
                     if dealer_score > 21:
                         print("Dealer busted, you win")
+                        print("Money bet: $", bet)
+                        print("Money earned: $", bet)
                     elif player_score == dealer_score:
                         print("Push, nobody wins or loses")
+                        print("No money lost or won")
+                        print("Money: ", bet)
                     elif player_score > dealer_score:
                         print("You beat the dealer, You Win!!!")
+                        print("Money bet: $", bet)
+                        print("Money earned: $", bet)
                         print(
                             "────────────────────────────────────────────────────────────────────────────────────────────────────")
                         print(
@@ -254,11 +272,15 @@ while True:
 
                     else:  # dealer score is greater than your but lesser than 22
                         print('You Lose :/')
+                        print("Money lost: $", bet)
 
                     game_end = True
 
                 if first_hand and player_score == 21:
+                    # Blackjack gets paid 3 to 2
                     print("BlackJack! Nice!")
+                    print("Money bet: $", bet)
+                    print("Money earned: $", bet*3/2.0)
                     print(
                         "────────────────────────────────────────────────────────────────────────────────────────────────────")
                     print(
@@ -291,6 +313,7 @@ while True:
 
                 if player_score > 21:
                     print('You busted!')
+                    print("Money lost: $", bet)
                     game_end = True
 
                 first_hand = False
@@ -303,7 +326,7 @@ while True:
                 print(" [1] Hit")
                 print(" [2] Stand")
 
-                print("\n")
+                print("")
                 choice = input('Your Choice: ')
                 print("\n")
 
@@ -317,6 +340,9 @@ while True:
                     """
                     standing = True
                     error_in = False
+                    # handles soft 17. The dealer must draw on 16 and stand on 17
+                    # here is we have <=16 we will draw a card, otherwise
+                    # we continue with the while loop where now standing is true and result is revealed
                     while calc_hand(dealer) <= 16:
                         add_card_dealer()
                 else:
@@ -325,7 +351,7 @@ while True:
                     continue
 
             if game_end:
-                print("Do you want To play BlackJack ♠♦♥♣ again [Y/N]?")
+                print("\nDo you want To play BlackJack ♠♦♥♣ again [Y/N]?")
                 break
 
     elif play == 'N':
@@ -333,3 +359,4 @@ while True:
     else:
         print("Error: enter a valid value")
         continue
+
