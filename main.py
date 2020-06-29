@@ -6,12 +6,30 @@
 from os import system, name  # for clearing the screen with the help of os.system
 import random  # for installing shuffle
 
+
+def error_check(statement, typ):
+    if typ == "string":
+        while True:
+            choice = input(statement)
+            if choice == 'Y' or choice == 'N':
+                return choice
+            else:
+                print("Error: enter a valid value")
+
+    if typ == 'int':
+        while True:
+            choice = input(statement)
+            if choice == '1' or choice == '2':
+                return choice
+            else:
+                print("Error: enter a valid value")
+
+
 print("Do you want to play BlackJack ♠♦♥♣ [Y/N]")
 
 while True:
 
-    play = input('Your Choice: ')
-
+    play = error_check('Your Choice: ', 'string')
 
     """
     Here we are not checking for string becuse too much input validation in the game will destroy 
@@ -153,13 +171,8 @@ while True:
         dealer = []
         player = []
 
-        # no of cards distributed
-        global distributed_card_no
-        distributed_card_no = 0
 
-
-        # appends one items at the end of the list
-        def add_card_player():
+        def add_card_player():  # appends one items at the end of the list
             player.append(cards.pop())
 
 
@@ -207,7 +220,6 @@ while True:
 
         standing = False
         first_hand = True
-        error_in = False
         game_end = False
 
         while True:
@@ -215,72 +227,57 @@ while True:
             player_score = calc_hand(player)
             dealer_score = calc_hand(dealer)
 
-            if not error_in:
+            clear()
 
-                clear()
+            if standing:
+                print('Dealer Cards:', dealer_score)
+                print(ascii_version_of_card(*dealer))
+            else:
+                print('Dealer Cards:')
+                print(ascii_version_of_hidden_card(
+                    *dealer))  # we are passing it as *dealer as we need to pass the address
+            print('\nYour Cards:', player_score)
+            print(ascii_version_of_card(*player))
 
-                if standing:
-                    print('Dealer Cards:', dealer_score)
+            if player_score > 21:
+                print('You busted!')
+                print("Money lost: $", bet)
+                break
+
+            if first_hand:
+                double_down = error_check("Do you want to double-down [Y/N]:", 'string')
+                if double_down == 'Y':
+                    bet = bet * 2
+                    add_card_player()
+                    standing = True
+                    error_in = False
+                    while calc_hand(dealer) <= 16:
+                        add_card_dealer()
+                    clear()
+                    player_score = calc_hand(player)
+                    print('\nDealer Cards:', dealer_score)
                     print(ascii_version_of_card(*dealer))
-                else:
-                    print('Dealer Cards:')
-                    print(ascii_version_of_hidden_card(
-                        *dealer))  # we are passing it as *dealer as we need to pass the address
-                print('\nYour Cards:', player_score)
-                print(ascii_version_of_card(*player))
+                    print('\nYour Cards:', player_score)
+                    print(ascii_version_of_card(*player))
 
-                if standing:
-                    if dealer_score > 21:
-                        print("Dealer busted, you win")
-                        print("Money bet: $", bet)
-                        print("Money earned: $", bet)
-                    elif player_score == dealer_score:
-                        print("Push, nobody wins or loses")
-                        print("No money lost or won")
-                        print("Money: ", bet)
-                    elif player_score > dealer_score:
-                        print("You beat the dealer, You Win!!!")
-                        print("Money bet: $", bet)
-                        print("Money earned: $", bet)
-                        print(
-                            "────────────────────────────────────────────────────────────────────────────────────────────────────")
-                        print(
-                            "****************************************************************************************************")
-                        print(
-                            "────────────────────────────────────────────────────────────────────────────────────────────────────")
-                        print(
-                            "***     ***      ****       ***      ***          ***                   ***   ***   ******      ***")
-                        print(
-                            " ***   ***     ***  ***     ***      ***          ***                   ***   ***   *** ***     ***")
-                        print(
-                            "  *** ***     ***    ***    ***      ***          ***       *****       ***   ***   ***  ***    ***")
-                        print(
-                            "   *****     ***      ***   ***      ***          ***      *** ***      ***   ***   ***   ***   ***")
-                        print(
-                            "    ***       ***    ***     ***    ***            ***    ***   ***    ***    ***   ***    ***  ***")
-                        print(
-                            "    ***        ***  ***       ***  ***              ***  ***     ***  ***     ***   ***     *** ***")
-                        print(
-                            "    ***          ****          ******                ******       ******      ***   ****     ****** "
-                            "                    ")
-                        print(
-                            "────────────────────────────────────────────────────────────────────────────────────────────────────")
-                        print(
-                            "****************************************************************************************************")
-                        print(
-                            "────────────────────────────────────────────────────────────────────────────────────────────────────")
+            if player_score > 21:
+                print('You busted!')
+                print("Money lost: $", bet)
+                break
 
-                    else:  # dealer score is greater than your but lesser than 22
-                        print('You Lose :/')
-                        print("Money lost: $", bet)
-
-                    game_end = True
-
-                if first_hand and player_score == 21:
-                    # Blackjack gets paid 3 to 2
-                    print("BlackJack! Nice!")
+            if standing:
+                if dealer_score > 21:
+                    print("Dealer busted, you win")
                     print("Money bet: $", bet)
-                    print("Money earned: $", bet*3/2.0)
+                    print("Money earned: $", bet)
+                elif player_score == dealer_score:
+                    print("Push, nobody wins or loses")
+                    print("No money lost or won")
+                    print("Money: ", bet)
+                elif player_score > dealer_score:
+                    print("You beat the dealer, You Win!!!")
+                    print("Money bet: $", bet)
+                    print("Money earned: $", bet)
                     print(
                         "────────────────────────────────────────────────────────────────────────────────────────────────────")
                     print(
@@ -309,54 +306,79 @@ while True:
                     print(
                         "────────────────────────────────────────────────────────────────────────────────────────────────────")
 
-                    game_end = True
-
-                if player_score > 21:
-                    print('You busted!')
+                else:  # dealer score is greater than your but lesser than 22
+                    print('You Lose :/')
                     print("Money lost: $", bet)
-                    game_end = True
 
-                first_hand = False
-
-            if not game_end:
-
-                # showing the menu
-                print("\n")
-                print("What would you like to do?")
-                print(" [1] Hit")
-                print(" [2] Stand")
-
-                print("")
-                choice = input('Your Choice: ')
-                print("\n")
-
-                if choice == '1':  # hit
-                    add_card_player()
-                    error_in = False
-
-                elif choice == '2':
-                    """
-                    we need to calculate dealers hand
-                    """
-                    standing = True
-                    error_in = False
-                    # handles soft 17. The dealer must draw on 16 and stand on 17
-                    # here is we have <=16 we will draw a card, otherwise
-                    # we continue with the while loop where now standing is true and result is revealed
-                    while calc_hand(dealer) <= 16:
-                        add_card_dealer()
-                else:
-                    print("Error: enter a valid value")
-                    error_in = True
-                    continue
-
-            if game_end:
-                print("\nDo you want To play BlackJack ♠♦♥♣ again [Y/N]?")
                 break
+
+            if first_hand and player_score == 21:
+                if dealer_score == 21:
+                    print("Both you and dealer have Blackjack")
+                    print("Push, nobody wins or loses")
+                    print("No money lost or won")
+                    print("Money: ", bet)
+                else:
+                    # Blackjack gets paid 3 to 2
+                    print("BlackJack! Nice!")
+                    print("Money bet: $", bet)
+                    print("Money earned: $", bet * 3 / 2.0)
+                    print(
+                        "────────────────────────────────────────────────────────────────────────────────────────────────────")
+                    print(
+                        "****************************************************************************************************")
+                    print(
+                        "────────────────────────────────────────────────────────────────────────────────────────────────────")
+                    print(
+                        "***     ***      ****       ***      ***          ***                   ***   ***   ******      ***")
+                    print(
+                        " ***   ***     ***  ***     ***      ***          ***                   ***   ***   *** ***     ***")
+                    print(
+                        "  *** ***     ***    ***    ***      ***          ***       *****       ***   ***   ***  ***    ***")
+                    print(
+                        "   *****     ***      ***   ***      ***          ***      *** ***      ***   ***   ***   ***   ***")
+                    print(
+                        "    ***       ***    ***     ***    ***            ***    ***   ***    ***    ***   ***    ***  ***")
+                    print(
+                        "    ***        ***  ***       ***  ***              ***  ***     ***  ***     ***   ***     *** ***")
+                    print(
+                        "    ***          ****          ******                ******       ******      ***   ****     ****** "
+                        "                    ")
+                    print(
+                        "────────────────────────────────────────────────────────────────────────────────────────────────────")
+                    print(
+                        "****************************************************************************************************")
+                    print(
+                        "────────────────────────────────────────────────────────────────────────────────────────────────────")
+
+                break
+
+            first_hand = False
+
+            # showing the menu
+            print("")
+            print("What would you like to do?")
+            print(" [1] Hit")
+            print(" [2] Stand")
+
+            choice = error_check('Your Choice: ', 'int')
+            print("\n")
+
+            if choice == '1':  # hit
+                add_card_player()
+
+            elif choice == '2':
+                """
+                 we need to calculate dealers hand
+                """
+                standing = True
+                # handles soft 17. The dealer must draw on 16 and stand on 17
+                # here is we have <=16 we will draw a card, otherwise
+                # we continue with the while loop where now standing is true and result is revealed
+                while calc_hand(dealer) <= 16:
+                    add_card_dealer()
+
+        print("\nDo you want To play BlackJack ♠♦♥♣ again [Y/N]?")
 
     elif play == 'N':
         break
-    else:
-        print("Error: enter a valid value")
-        continue
-
