@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'python-linux-eastus'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_45DF2E431D2B4E7DA8C7C27E37E0C18D }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DB846C6BA24045BD9E144C3B2FAEF0B7 }}
